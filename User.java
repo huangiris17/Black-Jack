@@ -50,10 +50,6 @@ public class User {
         System.out.println(this.getName() + " has " + this.getPoints() + " points.");
     }
 
-    public boolean isOver21() {
-        return this.getPoints() > 21;
-    }
-
     public boolean hasMoney() {
         return this.getMoney() > 0;
     }

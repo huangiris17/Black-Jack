@@ -6,7 +6,10 @@ public class Game {
     User dealer;
     boolean isEnd;
     boolean playerWin;
+    int playerBet;
+    int dealerBet;
     boolean isFirstGame;
+    Scanner in;
 
     public Game(String pName) {
         this.player = new Player(pName);
@@ -14,46 +17,32 @@ public class Game {
         this.playerWin = false;
         this.isEnd = false;
         this.isFirstGame = true;
+        this.playerBet = 0;
+        this.dealerBet = 0;
+        this.in = new Scanner(System.in);
     }
 
     public void gameStart() {
         while (player.hasMoney()) {
-            Scanner in = new Scanner(System.in);
             if (!isFirstGame) {
-                System.out.println();
+                println();
                 System.out.println("Keep playing Y/N: ");
                 String ans = in.next();
                 if (ans.equals("N")) {
                     System.out.println("See ya!");
                     break;
                 }
+                newGame();
             }
 
-            System.out.println();
-            System.out.println("=== New Round Starts ===");
-            newGame();
-            System.out.println(player.getName() + ": $" + player.getMoney());
-            System.out.print("How much money to bet: ");
-            int playerBet = Integer.parseInt(in.next());
-            player.bet(playerBet);
-            Random random = new Random();
-            int dealerBet = random.nextInt(playerBet) + 50;
-            dealer.bet(dealerBet);
-            System.out.println("Dealer bet $" + dealerBet);
-
+            printSectorLine("New Round Starts");
+            makeBet();
             play();
-            isFirstGame = false;
+            updateBet();
+            if(isFirstGame) isFirstGame = false;
 
-            if (playerWin) {
-                player.addMoney(playerBet + dealerBet);
-            } else {
-                if (!player.hasMoney()) {
-                    System.out.println("You lost all your money. Dealer won.");
-                    break;
-                }
-                dealer.addMoney(playerBet + dealerBet);
-            }
         }
+        System.out.println("You lost all your 💰💰. Dealer won.");
         return;
     }
 
@@ -64,17 +53,27 @@ public class Game {
         playerWin = false;
     }
 
+    private void makeBet() {
+        System.out.println(player.getName() + ": $" + player.getMoney());
+        System.out.print("How much money to bet: $");
+        playerBet = Integer.parseInt(in.next());
+        player.bet(playerBet);
+        Random random = new Random();
+        dealerBet = random.nextInt(playerBet) + random.nextInt(50);
+        dealer.bet(dealerBet);
+        System.out.println("Dealer bet $" + dealerBet);
+    }
+
+    private void updateBet() {
+        if (playerWin) {
+            player.addMoney(playerBet + dealerBet);
+        } else {
+            dealer.addMoney(playerBet + dealerBet);
+        }
+    }
+
     public void play() {
         initialCards();
-        if (player.isOver21()) {
-            System.out.println("😫Dealer won!");
-            return;
-        }
-        if (dealer.isOver21()) {
-            System.out.println("😍" + this.player.getName() + " won!");
-            playerWin = true;
-            return;
-        }
         while (!isEnd) {
             round();
         }
@@ -84,13 +83,16 @@ public class Game {
     }
 
     private void initialCards() {
-        System.out.println();
-        System.out.println("=== Dealer draw card ===");
+        printSectorLine("Dealer draw card");
         dealer.drawCardFirst();
-        checkWin(dealer);
-        System.out.println("=== " + this.player.getName() + " draw card ===");
+        if (checkBomb(dealer)) {
+            return;
+        }
+        printSectorLine(this.player.getName() + " draw card");
         player.drawCardFirst();
-        checkWin(player);
+        if (checkBomb(player)) {
+            return;
+        }
     }
 
     private void round() {
@@ -100,25 +102,19 @@ public class Game {
 
     private void playerPlay() {
         printBreakLine();
-        System.out.println("=== " + player.getName() + "'s turn ===");
+        printSectorLine(player.getName() + "'s turn");
         System.out.println(player.getName() + ": " + player.getPoints() + " points/ " + dealer.getName() + ": " + dealer.getPoints() + " points.");
-        Scanner in = new Scanner(System.in);
         while (true) {
-            System.out.println();
+            println();
             System.out.print( "Draw a new card Y/N: ");
             String res = in.next();
             if (res.equals("Y")) {
                 player.drawCard();
-                System.out.println();
+                println();
                 dealer.showPoints();
                 player.showPoints();
-                if (checkWin(player)) {
-                    playerWin = true;
-                    break;
-                } else if (player.isOver21()) {
-                    System.out.println("Bomb💥 player lost😫!");
-                    isEnd = true;
-                    playerWin = false;
+                println();
+                if (checkBomb(player)) {
                     break;
                 }
             } else if (res.equals("N")) {
@@ -141,29 +137,41 @@ public class Game {
             System.out.println("...Dealer draw card...");
             dealer.drawCard();
             dealer.showPoints();
-            System.out.println();
+            println();
+            if (checkBomb(dealer)) break;
         }
-        if (checkWin(dealer)) {
-            playerWin = false;
-            return;
-        }
-        if (dealer.isOver21()) {
-            isEnd = true;
-            playerWin = true;
-            System.out.println("😍" + this.player.getName() + " won!");
-            return;
-        }
+        return;
+    }
+
+    private void printSectorLine(String str) {
+        println();
+        System.out.println("=== " + str + " ===");
     }
 
     private void printBreakLine() {
-        System.out.println();
+        println();
         System.out.println("*********************");
+        println();
     }
 
-    private boolean checkWin(User user) {
+    private void println() {
+        System.out.println();
+    }
+
+    private boolean checkBomb(User user) {
         if (user.getPoints() == 21) {
             System.out.println("Black Jack. " + user.getName() + " won❗️");
             isEnd = true;
+            if (user.getName().equals(player.getName())) playerWin = true;
+            return true;
+        } else if (user.getPoints() > 21) {
+            isEnd = true;
+            if (user.getName().equals("Dealer")) {
+                System.out.println("Bomb💥 dealer lost!");
+                playerWin = true;
+            } else {
+                System.out.println("Bomb💥 " + player.getName()+ " lost😫!");
+            }
             return true;
         }
         return false;
