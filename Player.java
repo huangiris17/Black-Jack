@@ -15,7 +15,6 @@ public class Player extends User{
     @Override
     public Card drawCard() {
         Card newCard = new Card();
-        cards.add(newCard);
         setPoints(newCard);
         newCard.showCard();
         return newCard;

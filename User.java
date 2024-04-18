@@ -2,13 +2,11 @@ import java.util.*;
 
 public class User {
     protected String name;
-    protected List<Card> cards;
     protected int money;
     protected int points;
     
     public User(String name) {
         this.name = name;
-        this.cards = new ArrayList<>();
         this.points = 0;
     }
 
@@ -33,7 +31,6 @@ public class User {
 
     public Card drawCard() {
         Card newCard = new Card();
-        cards.add(newCard);
         setPoints(newCard);
         return newCard;
     }
@@ -55,6 +52,18 @@ public class User {
 
     public boolean isOver21() {
         return this.getPoints() > 21;
+    }
+
+    public boolean hasMoney() {
+        return this.getMoney() > 0;
+    }
+
+    public void refresh() {
+        this.points = 0;
+    }
+
+    public void addMoney(int amount) {
+        this.money += amount;
     }
 }
 
