@@ -2,14 +2,14 @@ import java.util.Scanner;
 import java.util.Random;
 
 public class Game {
-    User player;
-    User dealer;
-    boolean isEnd;
-    boolean playerWin;
-    int playerBet;
-    int dealerBet;
-    boolean isFirstGame;
-    Scanner in;
+    private User player;
+    private User dealer;
+    private boolean isEnd;
+    private boolean playerWin;
+    private int playerBet;
+    private int dealerBet;
+    private boolean isFirstGame;
+    private Scanner in;
 
     public Game(String pName) {
         this.player = new Player(pName);

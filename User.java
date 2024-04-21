@@ -41,8 +41,8 @@ public class User {
 
     protected void setPoints(Card card) {
         int cardPoint = card.getValue();
-        if (cardPoint == 11 && cardPoint + this.getPoints() != 21) cardPoint = 1;
-        if (cardPoint != 11) cardPoint = Math.min(10, cardPoint);
+        if (cardPoint > 10) cardPoint = Math.min(10, cardPoint);
+        else if (cardPoint == 1 && this.getPoints() <= 10) cardPoint = 11;
         this.points += cardPoint;
     }
 
