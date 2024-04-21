@@ -29,7 +29,7 @@ public class Game {
                 System.out.println("Keep playing Y/N: ");
                 String ans = in.next();
                 if (ans.equals("N")) {
-                    System.out.println("See ya!");
+                    System.out.println("See ya! You won: $" + player.getMoney());
                     break;
                 }
                 newGame();
@@ -43,6 +43,16 @@ public class Game {
 
         }
         System.out.println("You lost all your 💰💰. Dealer won.");
+        return;
+    }
+
+    public void play() {
+        initialCards();
+        while (!isEnd) {
+            round();
+        }
+        printBreakLine();
+        System.out.println("Game Over.");
         return;
     }
 
@@ -70,16 +80,6 @@ public class Game {
         } else {
             dealer.addMoney(playerBet + dealerBet);
         }
-    }
-
-    public void play() {
-        initialCards();
-        while (!isEnd) {
-            round();
-        }
-        printBreakLine();
-        System.out.println("Game Over.");
-        return;
     }
 
     private void initialCards() {

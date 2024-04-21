@@ -10,18 +10,8 @@ public class User {
         this.points = 0;
     }
 
-    public int getMoney() {
-        return this.money;
-    }
-
-    public boolean bet(int betMade) {
-        if (betMade > this.money) return false;
-        this.money -= betMade;
-        return true;
-    }
-
-    public String getName() {
-        return this.name;
+    public void refresh() {
+        this.points = 0;
     }
 
     public void drawCardFirst() {
@@ -35,8 +25,34 @@ public class User {
         return newCard;
     }
 
+    public int getMoney() {
+        return this.money;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
     public int getPoints() {
         return this.points;
+    }
+
+    public void showPoints() {
+        System.out.println(this.getName() + " has " + this.getPoints() + " points.");
+    }
+
+    public boolean bet(int betMade) {
+        if (betMade > this.money) return false;
+        this.money -= betMade;
+        return true;
+    }
+
+    public boolean hasMoney() {
+        return this.getMoney() > 0;
+    }
+
+    public void addMoney(int amount) {
+        this.money += amount;
     }
 
     protected void setPoints(Card card) {
@@ -44,22 +60,6 @@ public class User {
         if (cardPoint > 10) cardPoint = Math.min(10, cardPoint);
         else if (cardPoint == 1 && this.getPoints() <= 10) cardPoint = 11;
         this.points += cardPoint;
-    }
-
-    public void showPoints() {
-        System.out.println(this.getName() + " has " + this.getPoints() + " points.");
-    }
-
-    public boolean hasMoney() {
-        return this.getMoney() > 0;
-    }
-
-    public void refresh() {
-        this.points = 0;
-    }
-
-    public void addMoney(int amount) {
-        this.money += amount;
     }
 }
 
