@@ -10,7 +10,7 @@ public class Dealer extends User {
     @Override
     public void drawCardFirst() {
         Card card1 = drawCard();
-        Card card2 = drawCard();
+        drawCard();
         
         card1.showCard();
     }

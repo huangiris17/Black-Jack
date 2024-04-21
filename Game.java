@@ -143,21 +143,6 @@ public class Game {
         return;
     }
 
-    private void printSectorLine(String str) {
-        println();
-        System.out.println("=== " + str + " ===");
-    }
-
-    private void printBreakLine() {
-        println();
-        System.out.println("*********************");
-        println();
-    }
-
-    private void println() {
-        System.out.println();
-    }
-
     private boolean checkBomb(User user) {
         if (user.getPoints() == 21) {
             System.out.println("Black Jack. " + user.getName() + " won❗️");
@@ -175,6 +160,22 @@ public class Game {
             return true;
         }
         return false;
+    }
+
+    ///Utility functions
+    private void printSectorLine(String str) {
+        println();
+        System.out.println("=== " + str + " ===");
+    }
+
+    private void printBreakLine() {
+        println();
+        System.out.println("*********************");
+        println();
+    }
+
+    private void println() {
+        System.out.println();
     }
 }
 
